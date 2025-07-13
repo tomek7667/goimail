@@ -28,7 +28,7 @@ jobs:
         run: |
           TAG=$(git describe --tags --abbrev=0)
           echo "Latest tag: $TAG"
-          GOPROXY'proxy.golang.org go list -m github.com/tomek7667/goimail@$TAG
+          GOPROXY=proxy.golang.org go list -m github.com/tomek7667/goimail@$TAG
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
