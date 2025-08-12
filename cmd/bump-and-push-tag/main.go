@@ -172,6 +172,7 @@ func main() {
 	flag.Parse()
 	if *isDryRun {
 		slog.Info("dry run found, won't git tag nor git push")
+		slog.SetLogLoggerLevel(slog.LevelDebug)
 	}
 	tags := getTags()
 	latest := getLatestTag(tags)
