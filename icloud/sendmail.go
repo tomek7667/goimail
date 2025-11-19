@@ -35,6 +35,7 @@ type SendMailOptions struct {
 		BodyContentType string
 		Body            string
 	}
+	FromTitle *string
 }
 
 func (c *Client) SendMail(subject, body string, options *SendMailOptions, to ...string) error {
@@ -48,7 +49,13 @@ func (c *Client) SendMail(subject, body string, options *SendMailOptions, to ...
 	}
 	m := mail.NewMessage(options.MessageSettings...)
 
-	m.SetHeader("From", c.SenderEmail)
+	var from string
+	if options.FromTitle != nil {
+		from = fmt.Sprintf(`"%s" <%s>`, *options.FromTitle, c.SenderEmail)
+	} else {
+		from = c.SenderEmail
+	}
+	m.SetHeader("From", from)
 	m.SetHeader("To", to...)
 	m.SetHeader("Subject", subject)
 
@@ -84,7 +91,7 @@ func (c *Client) SendMail(subject, body string, options *SendMailOptions, to ...
 
 	err := c.Dialer.DialAndSend(m)
 	if err != nil {
-		return fmt.Errorf("Dialing SMTP server and sending the message failed: %w", err)
+		return fmt.Errorf("dialing SMTP server and sending the message failed: %w", err)
 	}
 	return nil
 }
